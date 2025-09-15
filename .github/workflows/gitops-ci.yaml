@@ -1,0 +1,36 @@
+name: GitOps CI
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Install kubeval
+      run: |
+        wget https://github.com/instrumenta/kubeval/releases/latest/download/kubeval-linux-amd64.tar.gz
+        tar xf kubeval-linux-amd64.tar.gz
+        sudo cp kubeval /usr/local/bin
+    - name: Validate Kubernetes manifests
+      run: kubeval --strict manifests/*.yaml
+    - name: Check Istio and TLS Structure
+      run: |
+        # Verifica 3 apps Istio
+        APPS=$(grep -c "kind: Application" manifests/istio-*.yaml | awk '{sum+=$1} END {print sum}')
+        if [ "$APPS" -ne 3 ]; then
+          echo "ERROR: Deben ser 3 Applications para Istio"
+          exit 1
+        fi
+        # Chequea host y ACM
+        if ! grep -q "apps.pocarqnube.com" manifests/istio-gateway.yaml; then
+          echo "ERROR: Host 'apps.pocarqnube.com' missing"
+          exit 1
+        fi
+        if ! grep -q "aws-load-balancer-ssl-cert: TU_ACM_ARN" manifests/istio-ingressgateway.yaml; then
+          echo "ERROR: ACM ARN missing"
+          exit 1
+        fi
+        echo "Structure OK"
