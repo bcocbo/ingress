@@ -15,7 +15,7 @@ jobs:
         tar xf kubeval-linux-amd64.tar.gz
         sudo cp kubeval /usr/local/bin
     - name: Validate Kubernetes manifests
-      run: kubeval --strict manifests/*.yaml
+      run: kubeval --strict --ignore-missing-schemas manifests/*.yaml  # Agrega --ignore-missing-schemas para CRDs como ArgoCD
     - name: Check Istio and TLS Structure
       run: |
         # Verifica 3 apps Istio
@@ -31,6 +31,12 @@ jobs:
         fi
         if ! grep -q "aws-load-balancer-ssl-cert: TU_ACM_ARN" manifests/istio-ingressgateway.yaml; then
           echo "ERROR: ACM ARN missing"
+          exit 1
+        fi
+        # Chequea ArgoCD apps para GitOps
+        ARGOCD_APPS=$(grep -c "kind: Application" manifests/*.yaml)
+        if [ "$ARGOCD_APPS" -lt 5 ]; then  # Espera al menos root + istio + backstage
+          echo "ERROR: Insufficient ArgoCD Applications"
           exit 1
         fi
         echo "Structure OK"
