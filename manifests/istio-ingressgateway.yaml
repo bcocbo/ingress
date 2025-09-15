@@ -1,0 +1,33 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: istio-ingressgateway
+  namespace: argocd
+spec:
+  project: default
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: istio-system
+  source:
+    repoURL: https://istio-release.storage.googleapis.com/charts
+    chart: gateway
+    targetRevision: 1.23.*
+    helm:
+      values: |
+        service:
+          type: LoadBalancer
+          ports:
+          - port: 443  # Externo HTTPS
+            name: https
+          - port: 80   # Redirect a HTTPS
+            name: http
+          annotations:  # Integra ACM
+            service.beta.kubernetes.io/aws-load-balancer-type: nlb  
+            service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-1:851725646489:certificate/b08eb77c-4d90-4a99-8e57-5a812f8f08a5
+            service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http  
+            service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"  
+            service.beta.kubernetes.io/aws-load-balancer-connection-idle-timeout: "3600"  # Opcional para WebSockets
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

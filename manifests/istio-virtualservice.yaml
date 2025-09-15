@@ -1,0 +1,39 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: single-gitops-vs
+  namespace: istio-system
+spec:
+  hosts:
+  - "apps.pocarqnube.com"
+  gateways:
+  - istio-system/gitops-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: routes-lister-service.default.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - uri:
+        prefix: /argocd/
+    rewrite:
+      uri: /
+    route:
+    - destination:
+        host: argocd-server.argocd.svc.cluster.local
+        port:
+          number: 80
+  - match:
+    - uri:
+        prefix: /backstage/
+    rewrite:
+      uri: /
+    route:
+    - destination:
+        host: backstage.backstage.svc.cluster.local
+        port:
+          number: 7007
