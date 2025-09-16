@@ -1,4 +1,4 @@
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1beta1
 kind: Gateway
 metadata:
   name: gitops-gateway
@@ -11,13 +11,18 @@ spec:
       number: 80
       name: http
       protocol: HTTP
+    hosts:
+    - apps.pocarqnube.com
+    # Opcional: Redirect HTTP a HTTPS
     tls:
       httpsRedirect: true
-    hosts:
-    - "apps.pocarqnube.com"
   - port:
       number: 443
       name: https
-      protocol: HTTP
+      protocol: HTTPS
+    tls:
+      mode: SIMPLE
+      credentialName: tls-secret  # Tu certificado TLS
     hosts:
-    - "apps.pocarqnube.com"
+    - apps.pocarqnube.com
+    
