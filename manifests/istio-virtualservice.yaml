@@ -26,7 +26,7 @@ spec:
     - destination:
         host: argocd-server.argocd.svc.cluster.local
         port:
-          number: 80
+          number: 443
   - match:
     - uri:
         prefix: /backstage/
@@ -36,4 +36,4 @@ spec:
     - destination:
         host: backstage.backstage.svc.cluster.local
         port:
-          number: 7007
+          number: 80
