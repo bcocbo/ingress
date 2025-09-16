@@ -5,9 +5,9 @@ metadata:
   namespace: istio-system
 spec:
   hosts:
-  - "apps.pocarqnube.com"
+  - apps.pocarqnube.com
   gateways:
-  - istio-system/gitops-gateway
+  - gitops-gateway
   http:
   - match:
     - uri:
@@ -26,7 +26,7 @@ spec:
     - destination:
         host: argocd-server.argocd.svc.cluster.local
         port:
-          number: 80
+          number: 443
   - match:
     - uri:
         prefix: /backstage/
@@ -36,4 +36,4 @@ spec:
     - destination:
         host: backstage.backstage.svc.cluster.local
         port:
-          number: 7007
+          number: 80
