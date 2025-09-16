@@ -14,8 +14,8 @@ spec:
     hosts:
     - apps.pocarqnube.com
     # Opcional: Redirect HTTP a HTTPS
-    tls:
-      httpsRedirect: true
+    #tls:
+      #httpsRedirect: true
   - port:
       number: 443
       name: https
