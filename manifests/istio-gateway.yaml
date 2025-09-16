@@ -20,4 +20,4 @@ spec:
       name: https
       protocol: HTTP
     hosts:
-    - "apps.pocarqnube.com"
+    - apps.pocarqnube.com
