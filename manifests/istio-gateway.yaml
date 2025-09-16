@@ -13,5 +13,3 @@ spec:
       protocol: HTTP
     hosts:
     - apps.pocarqnube.com
-    
-  
