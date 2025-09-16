@@ -1,18 +1,18 @@
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1
 kind: VirtualService
 metadata:
   name: single-gitops-vs
   namespace: istio-system
 spec:
-  hosts:
-  - apps.pocarqnube.com
   gateways:
   - gitops-gateway
+  hosts:
+  - apps.pocarqnube.com
   http:
-  
+  # Backstage - con configuración corregida
   - match:
     - uri:
-        prefix: "/backstage/"
+        prefix: /backstage
     rewrite:
       uri: /
     route:
@@ -20,13 +20,23 @@ spec:
         host: backstage.backstage.svc.cluster.local
         port:
           number: 80
+  
+  # ArgoCD - puerto corregido y sin rewrite problemático
   - match:
     - uri:
-        prefix: "/argocd/"
-    rewrite:
-      uri: /
+        prefix: /argocd
     route:
     - destination:
         host: argocd-server.argocd.svc.cluster.local
         port:
-          number: 443
+          number: 80  # Cambiado de 443 a 80
+  
+  # Ruta por defecto - ESTO FALTABA
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: routes-lister-service.default.svc.cluster.local  # Tu servicio por defecto
+        port:
+          number: 80
