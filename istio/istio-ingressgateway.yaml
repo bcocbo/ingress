@@ -14,10 +14,16 @@ spec:
     targetRevision: 1.23.*
     helm:
       values: |
+        global:
+          istioNamespace: istio-system
         pilot:
           autoscaleEnabled: false
           nodeSelector:
-            karpenter.sh/nodepool: default 
+            karpenter.sh/nodepool: default
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "2048Mi" 
             
         service:
           type: LoadBalancer
