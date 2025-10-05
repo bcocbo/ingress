@@ -23,7 +23,7 @@ spec:
         pilot:
           autoscaleEnabled: false
           nodeSelector:
-            karpenter.sh/nodepool: ondemand  # Target the default NodePool
+            karpenter.sh/nodepool: ondemand  
           resources:
             requests:
               cpu: "500m"

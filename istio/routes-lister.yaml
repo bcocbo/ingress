@@ -25,8 +25,8 @@ metadata:
   name: routes-lister
   namespace: default
 spec:
-  nodeSelector:
-    karpenter.sh/nodepool: ondemand
+  #nodeSelector:
+   # karpenter.sh/nodepool: ondemand
   replicas: 1
   selector:
     matchLabels:
