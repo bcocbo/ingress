@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: https://github.com/bcocbo/ingress.git
     targetRevision: HEAD
-    path: manifests/
+    path: istio/
   destination:
     server: https://kubernetes.default.svc
     namespace: default
