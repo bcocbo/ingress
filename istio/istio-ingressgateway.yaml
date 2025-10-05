@@ -41,7 +41,7 @@ spec:
             service.beta.kubernetes.io/aws-load-balancer-connection-idle-timeout: "3600"  # Opcional para WebSockets
   syncPolicy:
     automated:
-      prune: true
+      prune: false
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
