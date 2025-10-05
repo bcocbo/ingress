@@ -18,8 +18,7 @@ spec:
       values: |
         global:
           istioNamespace: istio-system
-        defaultPodDisruptionBudget:
-          enabled: true
+        
         pilot:
           autoscaleEnabled: false
           nodeSelector:
