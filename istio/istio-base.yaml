@@ -20,8 +20,14 @@ spec:
           istioNamespace: istio-system
         defaultPodDisruptionBudget:
           enabled: true
-        defaultNodeSelector:
-          karpenter.sh/nodepool: default  
+        pilot:
+          autoscaleEnabled: false
+          nodeSelector:
+            karpenter.sh/nodepool: default  # Target the default NodePool
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "2048Mi"  
   syncPolicy:
     automated:
       prune: true
