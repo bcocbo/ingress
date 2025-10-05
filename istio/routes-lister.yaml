@@ -24,9 +24,7 @@ kind: Deployment
 metadata:
   name: routes-lister
   namespace: default
-spec:
-  nodeSelector:
-    karpenter.sh/nodepool: ondemand
+spec:  
   replicas: 1
   selector:
     matchLabels:
@@ -36,6 +34,8 @@ spec:
       labels:
         app: routes-lister
     spec:
+      nodeSelector:
+        karpenter.sh/nodepool: ondemand
       containers:
       - name: nginx
         image: nginx:1.21

@@ -4,8 +4,10 @@ metadata:
   name: gitops-gateway
   namespace: istio-system
 spec:
-  nodeSelector:
-    karpenter.sh/nodepool: ondemand
+  template:
+    spec:
+      nodeSelector:
+        karpenter.sh/nodepool: ondemand
   selector:
     istio: ingressgateway
   servers:
