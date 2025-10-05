@@ -25,6 +25,8 @@ metadata:
   name: routes-lister
   namespace: default
 spec:
+  nodeSelector:
+        karpenter.sh/nodepool: default
   replicas: 1
   selector:
     matchLabels:

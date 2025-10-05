@@ -1,8 +1,10 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: istiod
+  name: istio-base
   namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
   destination:
@@ -10,12 +12,16 @@ spec:
     namespace: istio-system
   source:
     repoURL: https://istio-release.storage.googleapis.com/charts
-    chart: istiod
+    chart: base
     targetRevision: 1.23.*
     helm:
       values: |
-        pilot:
-          autoscaleEnabled: false
+        global:
+          istioNamespace: istio-system
+        defaultPodDisruptionBudget:
+          enabled: true
+        defaultNodeSelector:
+          karpenter.sh/nodepool: default  
   syncPolicy:
     automated:
       prune: true
