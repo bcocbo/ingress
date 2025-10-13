@@ -14,7 +14,9 @@ spec:
   - port:
       number: 443
       name: https
-      protocol: HTTPS     
+      protocol: HTTPS 
+    tls:
+      mode: PASSTHROUGH # El NLB termina TLS con el certificado ACM      
     hosts:
     - apps.pocarqnube.com
   - port:
