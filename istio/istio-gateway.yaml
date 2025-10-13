@@ -23,4 +23,4 @@ spec:
       protocol: HTTP
     hosts:
     - apps.pocarqnube.com
-    httpRedirect: true # Redirige HTTP a HTTPS
+    
