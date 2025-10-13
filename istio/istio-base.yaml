@@ -20,9 +20,6 @@ spec:
           istioNamespace: istio-system
         
         pilot:
-          autoscaleEnabled: false
-          nodeSelector:
-            karpenter.sh/nodepool: ondemand  
           resources:
             requests:
               cpu: "500m"
