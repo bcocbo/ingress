@@ -12,8 +12,15 @@ spec:
     istio: ingressgateway
   servers:
   - port:
+      number: 443
+      name: https
+      protocol: HTTPS     
+    hosts:
+    - apps.pocarqnube.com
+  - port:
       number: 80
       name: http
       protocol: HTTP
     hosts:
     - apps.pocarqnube.com
+    httpRedirect: true # Redirige HTTP a HTTPS
