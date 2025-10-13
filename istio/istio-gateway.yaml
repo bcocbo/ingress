@@ -6,15 +6,7 @@ metadata:
 spec:
   selector:
     istio: ingressgateway
-  servers:
-  - port:
-      number: 443
-      name: https
-      protocol: HTTPS 
-    tls:
-      mode: PASSTHROUGH # El NLB termina TLS con el certificado ACM      
-    hosts:
-    - apps.pocarqnube.com
+  servers:  
   - port:
       number: 80
       name: http

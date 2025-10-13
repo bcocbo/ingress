@@ -31,7 +31,7 @@ spec:
     - destination:
         host: argocd-server.argocd.svc.cluster.local
         port:
-          number: 443  # Cambiado de 443 a 80
+          number: 80  # Cambiado de 443 a 80
   
   # Ruta por defecto - ESTO FALTABA
   - match:
