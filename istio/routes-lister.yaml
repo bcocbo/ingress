@@ -14,6 +14,7 @@ data:
         <li><a href="http://apps.pocarqnube.com/">Inicio (Routes Lister)</a></li>
         <li><a href="http://apps.pocarqnube.com/argocd">ArgoCD UI</a></li>
         <li><a href="http://apps.pocarqnube.com/backstage">Backstage Portal</a></li>
+        <li><a href="http://apps.pocarqnube.com/kafka">Kafka Cognito</a></li>
       </ul>
       <p>Actualizado vía GitOps. Fecha: September 15, 2025</p>
     </body>
