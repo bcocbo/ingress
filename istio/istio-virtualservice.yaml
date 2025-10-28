@@ -33,7 +33,10 @@ spec:
         port:
           number: 80 
   - match:
-    - port: 3100
+    - uri:
+        prefix: /mockserver
+    rewrite:
+      uri: / 
     route:
     - destination:
         host: mocksserver.prueba-envoy.svc.cluster.local  # Nombre completo del Service de mocksserver

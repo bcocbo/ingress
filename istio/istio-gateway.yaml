@@ -13,10 +13,5 @@ spec:
       protocol: HTTP
     hosts:
     - apps.pocarqnube.com
-  - port:  # Nuevo: Puerto para mocksserver
-      number: 3100
-      name: http-mocksserver
-      protocol: HTTP  
-    hosts:
-    - apps.pocarqnube.com  
+   
     
