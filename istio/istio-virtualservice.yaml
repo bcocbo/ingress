@@ -51,14 +51,4 @@ spec:
         host: routes-lister-service.default.svc.cluster.local  # Tu servicio por defecto        
         port:
           number: 80
-  tcp:
-  - match:
-    - uri:
-        prefix: /kafka
-    rewrite:
-      uri: /
-    route:
-    - destination:
-        host: poccluster-kafka-cognito-bootstrap.kafka.svc.cluster.local
-        port:
-          number: 30204                 
+               
