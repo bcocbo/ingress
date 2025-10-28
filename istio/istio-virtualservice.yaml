@@ -34,11 +34,9 @@ spec:
           number: 80 
   - match:
     - uri:
-        regex: "^/mockserver/?(.*)$"
+        prefix: /mockserver/
     rewrite:
-      uriRegexRewrite:
-        match: "^/mockserver/?(.*)$"
-        rewrite: "/\\1"  
+      uri: "/"
     route:
     - destination:
         host: mocksserver.prueba-envoy.svc.cluster.local  # Nombre completo del Service de mocksserver
