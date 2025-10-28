@@ -25,3 +25,9 @@ items:
     name: istio-system
     labels:
       istio-injection: enabled
+- apiVersion: v1
+  kind: Namespace
+  metadata:
+    name: prueba-envoy
+    labels:
+      istio-injection: enabled      
