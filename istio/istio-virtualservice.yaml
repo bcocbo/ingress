@@ -14,7 +14,7 @@ spec:
     - uri:
         prefix: /backstage
     rewrite:
-      uri: /
+      uri: "/"
     route:
     - destination:
         host: backstage.backstage.svc.cluster.local
@@ -26,7 +26,7 @@ spec:
     - uri:
         prefix: /argocd
     rewrite:
-      uri: /    
+      uri: "/"    
     route:
     - destination:
         host: argocd-server.argocd.svc.cluster.local
