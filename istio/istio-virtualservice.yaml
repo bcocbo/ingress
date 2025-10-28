@@ -33,6 +33,23 @@ spec:
         port:
           number: 80 
   - match:
+    - port: 3100
+    route:
+    - destination:
+        host: mocksserver.prueba-envoy.svc.cluster.local  # Nombre completo del Service de mocksserver
+        port:
+          number: 3100
+  
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: routes-lister-service.default.svc.cluster.local  # Tu servicio por defecto        
+        port:
+          number: 80
+  tcp:
+  - match:
     - uri:
         prefix: /kafka
     rewrite:
@@ -41,14 +58,4 @@ spec:
     - destination:
         host: poccluster-kafka-cognito-bootstrap.kafka.svc.cluster.local
         port:
-          number: 30204         
-  # Ruta por defecto - ESTO FALTABA
-  - match:
-    - uri:
-        prefix: /
-    route:
-    - destination:
-       # host: routes-lister-service.default.svc.cluster.local  # Tu servicio por defecto
-        host: poccluster-kafka-cognito-bootstrap.kafka.svc.cluster.local
-        port:
-          number: 30204
+          number: 30204                 
