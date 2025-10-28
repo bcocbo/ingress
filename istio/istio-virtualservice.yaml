@@ -36,7 +36,7 @@ spec:
     - uri:
         prefix: /mockserver
     rewrite:
-      uri:  
+      uri: '' 
     route:
     - destination:
         host: mocksserver.prueba-envoy.svc.cluster.local  # Nombre completo del Service de mocksserver
