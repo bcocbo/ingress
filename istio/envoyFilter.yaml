@@ -33,7 +33,7 @@ spec:
               -- Validación más robusta del UUID
               if x_request_id then
                 local cleaned = string.lower(x_request_id)
-                local match = string.match(cleaned, "^[0-9a-f]+%-[0-9a-f]+%-[0-9a-f]+%-[0-9a-f]+%-[0-9a-f]+$")
+                local match = string.match(cleaned, "^[0-9a-f]{0,7}+%-[0-9a-f]+%-[0-9a-f]+%-[0-9a-f]+%-[0-9a-f]+$")
                 if not match then
                   request_handle:respond({[":status"] = "400"}, "Invalid X-Request-ID format")
                 end
