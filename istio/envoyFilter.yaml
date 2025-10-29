@@ -18,28 +18,34 @@ spec:
             subFilter:
               name: envoy.filters.http.router
     patch:
-      operation: INSERT_BEFORE
-      value:
-        name: envoy.filters.http.lua
-        typed_config:
-          "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.Lua
-          inline_code: |
-            function envoy_on_request(request_handle)
-              local x_request_id = request_handle:headers():get("x-request-id")
-
-              -- Log para depuración
-              request_handle:logInfo("X-Request-ID recibido: " .. tostring(x_request_id))
-
-              -- Validación más robusta del UUID
-              if x_request_id then
-                local cleaned = string.lower(x_request_id)
-                --local match = string.match(cleaned, "^[0-9a-f]+%-[0-9a-f]+%-[0-9a-f]+%-[0-9a-f]+%-[0-9a-f]+$")
-                local match = string.match(cleaned, "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$")
-                if not match then
-                  request_handle:respond({[":status"] = "400"}, "Invalid X-Request-ID format")
-                end                           
-              end
-            end
+        operation: INSERT_BEFORE
+        value:
+          name: validate-x-request-id
+          typed_config:
+            "@type": type.googleapis.com/envoy.extensions.filters.http.custom_response.v3.CustomResponse
+            custom_response:
+              local_response:
+                status_code: 400
+                body_format:
+                  text_format_source:
+                    inline_string: |
+                      {"error": "Invalid x-request-id", "expected": "UUID v4 format"}
+                  headers_to_add:
+                    - name: content-type
+                      value: application/json
+            matchers:
+              - predicate:
+                  and_match:
+                    predicates:
+                      - header_match:
+                          name: x-request-id
+                          present_match: true
+                      - header_match:
+                          name: x-request-id
+                          regex_match: "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                          invert_match: true  # Si NO coincide → 400
+                response_action:
+                  local_response: {}
 
   - applyTo: NETWORK_FILTER
     match:
