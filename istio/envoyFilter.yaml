@@ -1,0 +1,55 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: x-request-id-validation-and-preserve
+  namespace: istio-system
+spec:
+  workloadSelector:
+    labels:
+      istio: ingressgateway
+  configPatches:
+  - applyTo: HTTP_FILTER
+    match:
+      context: GATEWAY
+      listener:
+        filterChain:
+          filter:
+            name: envoy.filters.network.http_connection_manager
+            subFilter:
+              name: envoy.filters.http.router
+    patch:
+      operation: INSERT_BEFORE
+      value:
+        name: envoy.filters.http.lua
+        typed_config:
+          "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.Lua
+          inline_code: |
+            function envoy_on_request(request_handle)
+              local x_request_id = request_handle:headers():get("x-request-id")
+
+              -- Log para depuración
+              request_handle:logInfo("X-Request-ID recibido: " .. tostring(x_request_id))
+
+              -- Validación más robusta del UUID
+              if x_request_id then
+                local cleaned = string.lower(x_request_id)
+                local match = string.match(cleaned, "^[0-9a-f]+%-[0-9a-f]+%-[0-9a-f]+%-[0-9a-f]+%-[0-9a-f]+$")
+                if not match then
+                  request_handle:respond({[":status"] = "400"}, "Invalid X-Request-ID format")
+                end
+              end
+            end
+
+  - applyTo: NETWORK_FILTER
+    match:
+      context: GATEWAY
+      listener:
+        filterChain:
+          filter:
+            name: envoy.filters.network.http_connection_manager
+    patch:
+      operation: MERGE
+      value:
+        typed_config:
+          "@type": type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
+          preserve_external_request_id: true
