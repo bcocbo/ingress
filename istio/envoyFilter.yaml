@@ -22,30 +22,34 @@ spec:
         value:
           name: validate-x-request-id
           typed_config:
-            "@type": type.googleapis.com/envoy.extensions.filters.http.custom_response.v3.CustomResponse
-            custom_response:
-              local_response:
-                status_code: 400
-                body_format:
-                  text_format_source:
-                    inline_string: |
-                      {"error": "Invalid x-request-id", "expected": "UUID v4 format"}
-                  headers_to_add:
-                    - name: content-type
-                      value: application/json
-            matchers:
-              - predicate:
-                  and_match:
-                    predicates:
-                      - header_match:
-                          name: x-request-id
-                          present_match: true
-                      - header_match:
-                          name: x-request-id
-                          regex_match: "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
-                          invert_match: true  # Si NO coincide → 400
-                response_action:
-                  local_response: {}
+            "@type": "type.googleapis.com/envoy.extensions.filters.http.lua.v3.Lua"
+            inlineCode: |
+              function is_valid_uuid_v4(x_request_id)
+                if not x_request_id or type(x_request_id) ~= "string" then
+                  return false
+                end
+                local s = string.lower(x_request_id)
+                if #s ~= 36 then return false end
+                if s:sub(9,9) ~= "-" or s:sub(14,14) ~= "-" or s:sub(19,19) ~= "-" or s:sub(24,24) ~= "-" then
+                  return false
+                end
+                local hex_pattern = "^[0-9a-f]*$"
+                local parts = {s:sub(1,8), s:sub(10,13), s:sub(15,18), s:sub(20,23), s:sub(25,36)}
+                for _, p in ipairs(parts) do
+                  if not string.match(p, hex_pattern) then return false end
+                end
+                if s:sub(15,15) ~= "4" then return false end
+                local v = s:sub(20,20)
+                if v ~= "8" and v ~= "9" and v ~= "a" and v ~= "b" then return false end
+                return true
+              end
+
+              function envoy_on_request(request_handle)
+                local x_request_id = request_handle:headers():get("x-request-id")
+                if x_request_id and not is_valid_uuid_v4(x_request_id) then
+                  request_handle:respond({[":status"] = "400"}, "Invalid x-request-id: must be a valid UUID v4")
+                end
+              end
 
   - applyTo: NETWORK_FILTER
     match:
